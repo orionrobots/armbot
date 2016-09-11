@@ -1,3 +1,21 @@
+"""uArm python controller.
+Requires the uArmSerial code to be running on the arduino.
+Usage:
+
+>>> import serial
+>>> import uarm_serial
+>>> conn = serial.serial_for_url(<portspec>)
+>>> arm = uarm_serial.uArmSerial(conn)
+
+You are now connected to the arm.
+
+>>> arm.attach_all()
+This will enable all serial motors - it is not the default - you may want to relax
+them to save power, or so the open feedack potentiometers can be used as sensors.
+See the demo functions at the bottom for examples of movement.
+demo_setup is currently configured for my own test machine.
+"""
+
 import serial
 from functools import partial
 import logging
@@ -95,7 +113,12 @@ def go_demo(arm):
 
 def demo_setup():
     logging.basicConfig(level=logging.INFO)
-    conn = serial.serial_for_url("COM8:9600")
+    import platform
+    if 'linux' in platform.platform().lower():
+        conn = serial.serial_for_url("/dev/ttyUSB0")
+        conn.baudrate = 9600
+    else:
+        conn = serial.serial_for_url("COM4:9600")
     conn.timeout = 0.1
     found_ready = False
     while not found_ready:
@@ -113,7 +136,7 @@ def demo_setup():
     conn.close()
     
 
-demo_setup()
+# demo_setup()
 # import time
 # 
 # try:
