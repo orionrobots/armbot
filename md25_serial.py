@@ -47,19 +47,19 @@ class md25:
 	#@param value - List of values
 	def writeReg(self, regAddr, value):
 		command = toHex([I2C_AD1, self.devAddr, regAddr, len(value)] +  value)
-		print "Sending " + command.encode('hex') + "\n"
+		print("Sending " + command.encode('hex'))
 		self.ser.write(command)
 
 	#regaddr -> int register
 	#ser -> serial object
 	def readReg(self, regAddr, size):
 		command = toHex([I2C_SGL, self.devAddr, regAddr])
-		print "Sending " + command.encode('hex') + "\n"
+		print("Sending " + command.encode('hex'))
 		self.ser.write(command)
 		if(self.ser.read(1) != strToHex(1)):
 			raise Exception("Device send failed\n")
 		command = toHex([I2C_SGL, self.devAddr | 0x1])
-		print "Sending " + command.encode('hex') + "\n"
+		print("Sending " + command.encode('hex'))
 		self.ser.write(command)
 		return self.ser.read(size)
 
