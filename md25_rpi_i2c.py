@@ -53,15 +53,15 @@ class Md25pi:
                 """Start left motor. Speed +/- 127"""
                 self.write_byte(MD25_SPEED2, 128 + speed)
 
-import time
 
 def main():
+        import time
         address = 0x58
         bus = smbus.SMBus(1)
         motors = Md25pi(bus, address)
         try:
-                print "Version is ", motors.get_version()
-                print "Battery voltage is ", motors.get_battery_volts()
+                print("Version is ", motors.get_version())
+                print("Battery voltage is ", motors.get_battery_volts())
                 assert motors.get_battery_volts() >= 80, "Too low - did you turn it on?"
                 motors.set_left(70)
                 motors.set_right(70)
@@ -74,4 +74,5 @@ def main():
         finally:
                 motors.stop()
 
-#main()
+if __name__ == '__main__':
+        main()
