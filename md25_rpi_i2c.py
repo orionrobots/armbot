@@ -1,4 +1,4 @@
-import smbus
+import smbus2
 
 MD25_SPEED1 = 0
 MD25_SPEED2 = 1
