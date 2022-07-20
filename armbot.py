@@ -2,7 +2,7 @@ import serial
 import smbus2
 import time
 
-from uarm_serial import uArmSerial
+from uarm_serial import uArmSerial, go_demo
 from md25_rpi_i2c import Md25pi
 
 class Robot:
@@ -23,3 +23,17 @@ class Robot:
             self.motors.set_right(right)
             time.sleep(for_time)
 
+    def go_arm(self):
+        go_demo(self.arm)
+
+    def turn_left(self, speed=80, for_time=0.4):
+        self.move(speed, -128, for_time)
+
+    def turn_right(self, speed=80, for_time=0.4):
+        self.move(speed, 128, for_time)
+
+    def forward(self, speed=80, for_time=0.8):
+        self.move(speed, 0, for_time)
+    
+    def backwards(self, speed=80, for_time=0.8):
+        self.forward(speed=-speed, for_time=for_time)
