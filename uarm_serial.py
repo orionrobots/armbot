@@ -39,7 +39,9 @@ class uArmSerial(object):
 
     def _write_conn(self, data):
         logging.info(data)
-        self._serial_conn.write(data)
+        self._serial_conn.write(
+            bytes(data, 'utf-8')
+            )
 
 #    def decode_lines(self, lines):
 #        """Decodes list of utf-8 bytearrays"""
@@ -56,18 +58,18 @@ class uArmSerial(object):
         
     def _write_motor(self, motor_number, position):
         """Format a serial string and send it"""
-        cmd = b"P%d,%d;" % (motor_number, position)
+        cmd = "P%d,%d;" % (motor_number, position)
         self._write_conn(cmd)
 
     def attach(self, joint_no):
         """Attach a servo (power it)"""
-        cmd = b"A%d;" % (joint_no)
+        cmd = "A%d;" % (joint_no)
         self._write_conn(cmd)
         self.clear_response()
 
     def detach(self, joint_no):
         """Detach servo - save power, or become sense only"""
-        cmd = b"D%d;" % (joint_no)
+        cmd = "D%d;" % (joint_no)
         self._write_conn(cmd)
         self.clear_response()
         
@@ -80,10 +82,10 @@ class uArmSerial(object):
         
     def read_pot(self, pot_no):
         """Read a potentiometer on the arm"""
-        self.clear_response(force=True)
-        cmd = b"?%d;" % (pot_no)
+        self.clear(force=True)
+        cmd = "?%d;" % (pot_no)
         self._write_conn(cmd)
-        response = b''.join(self._serial_conn.readlines()).decode('utf-8')
+        response = ''.join(self._serial_conn.readlines()).decode('utf-8')
         logging.info(response)
         response = response[1].strip()
         return int(response)

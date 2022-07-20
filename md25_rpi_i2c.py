@@ -1,4 +1,5 @@
-import smbus
+import smbus2
+from contextlib import contextmanager
 
 MD25_SPEED1 = 0
 MD25_SPEED2 = 1
@@ -31,7 +32,6 @@ class Md25pi:
         def read_register(self, register):
                 """Write a single register byte"""
                 return self._bus.read_byte_data(self._address, register)
-        
         def get_version(self):
                 """Get device version number"""
                 return self.read_register(MD25_SW_REV)
@@ -69,9 +69,15 @@ class Md25pi:
                   self._bus.read_register(self._address, MD25_ENC2C),
                   self._bus.read_register(self._address, MD25_ENC2D)]
 
-import time
+        @contextmanager
+        def safe(self):
+                try:
+                        yield self
+                finally:
+                        self.stop()
 
 def main():
+        import time
         address = 0x58
         bus = smbus.SMBus(1)
         motors = Md25pi(bus, address)
@@ -90,4 +96,5 @@ def main():
         finally:
                 motors.stop()
 
-#main()
+if __name__ == '__main__':
+        main()
