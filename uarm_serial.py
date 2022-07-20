@@ -113,7 +113,12 @@ def go_demo(arm):
 
 def demo_setup():
     logging.basicConfig(level=logging.INFO)
-    conn = serial.serial_for_url("COM8:9600")
+    import platform
+    if 'linux' in platform.platform().lower():
+        conn = serial.serial_for_url("/dev/ttyUSB0")
+        conn.baudrate = 9600
+    else:
+        conn = serial.serial_for_url("COM4:9600")
     conn.timeout = 0.1
     found_ready = False
     while not found_ready:

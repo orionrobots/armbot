@@ -35,4 +35,3 @@ vision -
 setup picamera
 then python-opencv, python-numpy
 python-scipy
-

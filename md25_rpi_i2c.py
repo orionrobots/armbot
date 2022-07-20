@@ -32,15 +32,14 @@ class Md25pi:
         def read_register(self, register):
                 """Write a single register byte"""
                 return self._bus.read_byte_data(self._address, register)
-
         def get_version(self):
                 """Get device version number"""
                 return self.read_register(MD25_SW_REV)
 
         def get_battery_volts(self):
                 """Get the battery voltage"""
-                return self.read_register(MD25_BATTV)
-
+                return self.read_register(MD25_BATTV)/10
+        
         def stop(self):
                 """Stop all movement"""
                 self.write_byte(MD25_SPEED1, 128)
@@ -48,11 +47,27 @@ class Md25pi:
 
         def set_left(self, speed):
                 """Start left motor. Speed +/- 127"""
-                self.write_byte(MD25_SPEED1, 128 + speed)
+                self.write_byte(MD25_SPEED2, 128 - speed)
 
         def set_right(self, speed):
                 """Start left motor. Speed +/- 127"""
-                self.write_byte(MD25_SPEED2, 128 + speed)
+                self.write_byte(MD25_SPEED1, 128 - speed)
+
+	def read_left_encoder(self):
+		"""Read the 4 encoder registers, return an int"""
+		return [
+		  self._bus.read_register(self._address, MD25_ENC1A),
+		  self._bus.read_register(self._address, MD25_ENC1B),
+                  self._bus.read_register(self._address, MD25_ENC1C),
+                  self._bus.read_register(self._address, MD25_ENC1D)]
+
+	def read_right_encoder(self):
+		"""Read the 4 encoder registers, return an int"""
+		return [
+		  self._bus.read_register(self._address, MD25_ENC2A),
+                  self._bus.read_register(self._address, MD25_ENC2B),
+                  self._bus.read_register(self._address, MD25_ENC2C),
+                  self._bus.read_register(self._address, MD25_ENC2D)]
 
         @contextmanager
         def safe(self):
